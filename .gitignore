@@ -1,0 +1,7 @@
+.ipynb_checkpoints
+.vscode
+
+/data
+/env
+
+*.ipynb
