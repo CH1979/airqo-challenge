@@ -33,17 +33,18 @@ def create_features(df):
     return df
 
 
-def create_submission(train_df, test_df, sub_df):
+def create_submission(train_df, test_df, sub_df, clf):
     folds = StratifiedKFold(
         n_splits=settings.N_FOLDS
     )
-    clf = lgb.LGBMRegressor(**settings.LGBM_PARAMS)
     scores = []
 
-    for trn_idx, val_idx in folds.split(
+    for i, (trn_idx, val_idx) in enumerate(folds.split(
         train_df[settings.FEATURES],
         train_df['site']
-    ):
+    )):
+        print('-' * 30)
+        print(f'Fold # {i}')
         clf.fit(
             X=train_df.loc[trn_idx, settings.FEATURES],
             y=train_df.loc[trn_idx, settings.TARGET],
@@ -64,18 +65,24 @@ def create_submission(train_df, test_df, sub_df):
             test_df[settings.FEATURES]
         ) / settings.N_FOLDS
     mean_score = np.mean(scores)
-    print(mean_score)
-    sub_df.to_csv(
-        settings.MAIN_PATH / 'subs' / f'lgb-{mean_score:2.8}.csv',
-        index=False
-    )
+    return sub_df, mean_score
 
 
 def main():
     train_df, test_df, sub_df = get_data()
+
     train_df = create_features(train_df)
     test_df = create_features(test_df)
-    create_submission(train_df, test_df, sub_df)
+
+    params = settings.LGBM_PARAMS
+    clf = lgb.LGBMRegressor(**params)
+    sub_df, mean_score = create_submission(train_df, test_df, sub_df, clf)
+    print(f'Mean score on {settings.N_FOLDS}-folds:{mean_score}')
+
+    sub_df.to_csv(
+        settings.MAIN_PATH / 'subs' / f'lgb-{mean_score:2.8}.csv',
+        index=False
+    )
 
 
 if __name__ == '__main__':

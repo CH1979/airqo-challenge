@@ -35,7 +35,8 @@ FEATURES = [
 LGBM_PARAMS = {
     'random_state': RANDOM_STATE,
     'num_leaves': 15,
+    'max_depth': -1,
     'learning_rate': .01,
     'metric': 'rmse',
-    'num_iteration': 7000
+    'n_estimators': 5000
 }
