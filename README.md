@@ -4,7 +4,7 @@ Link for competition: [AirQo Low-Cost Air Quality Monitor Calibration Challenge]
 * Task: Regression
 * Metric: RMSE (Root Mean Squared Error)
 ## Result
-36 from 166
+32 from 166
 
 * Cross-validation: 12.083416
 * Private: 10.474534
